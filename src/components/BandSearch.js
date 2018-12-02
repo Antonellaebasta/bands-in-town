@@ -69,7 +69,7 @@ class BandSearch extends Component {
   state = {
     inputValue: "",
     dataIsLoading: false,
-    band: {}
+    band: JSON.parse(sessionStorage.getItem('band'))
   };
 
   handleChange = event => {
@@ -96,7 +96,11 @@ class BandSearch extends Component {
         fetchData(`${bandName}/events?app_id=34`)
       ]);
 
-      this.setState({ band: {artist, events}, dataIsLoading: false });
+      const band = {artist, events};
+      this.setState({ band, dataIsLoading: false });
+
+      /* Save data to sessionStorage so they gets cleared only when the page session ends. */
+      sessionStorage.setItem('band', JSON.stringify(band));
     } catch (e) { return e }
   };
 
