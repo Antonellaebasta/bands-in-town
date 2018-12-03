@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import SelectCity from "./SelectCity";
 import { COLORS, DESKTOP } from "../constants";
 import facebookIcon from "./icons/facebook.svg";
 import moment from "moment";
@@ -86,64 +87,34 @@ const EventInfo = styled.div`
   max-width: 80%;
 `;
 
-const SelectCityWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  width: 100%;
-  
-  @media ${DESKTOP} {
-    flex-direction: row;
-    align-items: center;
-  }
-`;
-
-const SelectCity = styled.select`
-  min-height: 34px;
-  width: 100%;
-  margin: 0;
-  padding: 6px;
-  border: none;
-  outline: none;
-  appearance: none;
-  border-radius: 0;
-  border-bottom: 3px solid ${COLORS.YELLOW};
-  background-color: transparent;
-  color: ${COLORS.DARK_GREY};
-  font-size: 16px;
-  cursor: pointer;
-  
-  @media ${DESKTOP} {
-    margin-left: 20px;
-    width: auto;
-  }
-`;
-
 class BandDetail extends Component {
   state = {
     citySelected: ""
   };
 
-  handleChange = e => {
-    this.setState({ citySelected: e.target.value });
+  handleSelectChange = citySelected => {
+    this.setState({ citySelected });
+  };
+
+  /**
+   * To filter the list of results onChange the option selected in SelectCity
+   * @returns {Array}
+   */
+  filteredEvents = () => {
+    const { citySelected } = this.state;
+    const {
+      band: { events }
+    } = this.props;
+
+    if (!citySelected.length) return events;
+
+    return events.filter(event => kebabCase(event.venue.city) === citySelected);
   };
 
   render() {
-    const { citySelected } = this.state;
     const {
       band: { artist, events }
     } = this.props;
-    const cities =
-      events.length &&
-      events.reduce(
-        (acc, event) =>
-          acc.includes(event.venue.city) ? acc : [...acc, event.venue.city],
-        []
-      );
-    const filteredEvents =
-      events.length && citySelected.length
-        ? events.filter(event => kebabCase(event.venue.city) === citySelected)
-        : events;
 
     return (
       <BandWrapper>
@@ -156,7 +127,11 @@ class BandDetail extends Component {
               <Info>
                 <h2>{artist.name}</h2>
                 {artist.facebook_page_url && (
-                  <a href={artist.facebook_page_url} target="_blank">
+                  <a
+                    href={artist.facebook_page_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <img
                       src={facebookIcon}
                       alt={`Profile Facebook ${artist.name}`}
@@ -165,26 +140,16 @@ class BandDetail extends Component {
                 )}
               </Info>
             </Artist>
-            {filteredEvents.length ? (
+            {events.length ? (
               <Events>
                 <Message>
-                  {artist.name} has {artist.upcoming_event_count} events in
-                  town
+                  {artist.name} has {artist.upcoming_event_count} events in town
                 </Message>
-                {cities.length && (
-                  <SelectCityWrapper>
-                    <p>Filter by City:</p>
-                    <SelectCity onChange={this.handleChange}>
-                      <option value="">All</option>
-                      {cities.map(city => (
-                        <option key={kebabCase(city)} value={kebabCase(city)}>
-                          {city}
-                        </option>
-                      ))}
-                    </SelectCity>
-                  </SelectCityWrapper>
-                )}
-                {filteredEvents.map(event => (
+                <SelectCity
+                  events={events}
+                  handleSelectCity={this.handleSelectChange}
+                />
+                {this.filteredEvents().map(event => (
                   <Event key={event.id}>
                     <EventDate>
                       {moment(event.datetime).format(" DD MMM")}

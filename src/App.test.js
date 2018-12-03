@@ -1,9 +1,16 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import { configure, shallow } from 'enzyme';
+import Adapter from "enzyme-adapter-react-16";
+import BandSearch from './components/BandSearch';
+import App, {Title} from './App';
 
-it('renders without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<App />, div);
-  ReactDOM.unmountComponentAtNode(div);
+configure({ adapter: new Adapter() });
+
+describe('<App/> shallow rendering', () => {
+  it('should render correctly', () => {
+    const wrapper = shallow(<App/>);
+
+    expect(wrapper.find(Title).text()).toBe('Search your bands in town');
+    expect(wrapper.find(BandSearch).length).toBe(1);
+  });
 });

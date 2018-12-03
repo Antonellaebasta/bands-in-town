@@ -1,8 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
-import BandSearch from './components/BandSearch';
-import { COLORS } from './constants';
-import './App.css';
+import React from "react";
+import styled from "styled-components";
+import BandSearch from "./components/BandSearch";
+import { COLORS } from "./constants";
+import "./App.css";
 
 const Wrapper = styled.div`
   display: flex;
@@ -12,14 +12,14 @@ const Wrapper = styled.div`
   width: 100%;
 `;
 
-const Title = styled.h2`
+export const Title = styled.h2`
   color: ${COLORS.BLUE};
 `;
 
 const App = () => (
   <Wrapper>
-    <Title>|Search your bands in town|</Title>
-    <BandSearch/>
+    <Title>Search your bands in town</Title>
+    <BandSearch />
   </Wrapper>
 );
 

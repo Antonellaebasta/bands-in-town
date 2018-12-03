@@ -55,9 +55,11 @@ const Button = styled.button`
 
   &:hover {
     color: ${COLORS.WHITE};
-    ${props => !props.disabled && `
+    ${props =>
+      !props.disabled &&
+      `
       background-color: ${COLORS.YELLOW};
-    `}
+    `};
   }
 
   @media ${DESKTOP} {
@@ -69,7 +71,7 @@ class BandSearch extends Component {
   state = {
     inputValue: "",
     dataIsLoading: false,
-    band: JSON.parse(sessionStorage.getItem('band'))
+    band: JSON.parse(sessionStorage.getItem("band"))
   };
 
   handleChange = event => {
@@ -89,19 +91,21 @@ class BandSearch extends Component {
    * @param bandName
    * @returns {Promise<*>}
    */
-  getBandData = async (bandName) => {
+  getBandData = async bandName => {
     try {
       const [artist, events] = await Promise.all([
         fetchData(`${bandName}?app_id=34`),
         fetchData(`${bandName}/events?app_id=34`)
       ]);
 
-      const band = {artist, events};
+      const band = { artist, events };
       this.setState({ band, dataIsLoading: false });
 
-      /* Save data to sessionStorage so they gets cleared only when the page session ends. */
-      sessionStorage.setItem('band', JSON.stringify(band));
-    } catch (e) { return e }
+      /* Save the band obj to sessionStorage so it gets cleared only when the page session ends. */
+      sessionStorage.setItem("band", JSON.stringify(band));
+    } catch (e) {
+      return e;
+    }
   };
 
   render() {
@@ -116,11 +120,14 @@ class BandSearch extends Component {
             onChange={this.handleChange}
             value={inputValue}
           />
-          <Button onClick={this.handleButtonClick} disabled={!inputValue.length}>
+          <Button
+            onClick={this.handleButtonClick}
+            disabled={!inputValue.length}
+          >
             Search
           </Button>
         </InputSearchWrapper>
-        {dataIsLoading && <Loader/>}
+        {dataIsLoading && <Loader />}
         {!dataIsLoading && !isEmpty(band) && <BandDetail band={band} />}
       </React.Fragment>
     );
