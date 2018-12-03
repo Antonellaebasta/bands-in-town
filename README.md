@@ -1,5 +1,5 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-## Detail
+## Description
 
 I have created 3 main Components: BandSearch, BandDetail and SelectCity - the last one is the optional feature (filter the events by city).
 For large scale projects is better to separate the logic, containers, from the UI, components, but for this tiny application I decided to don't follow this best practice because there isn't a complex logic behind.
